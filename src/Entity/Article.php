@@ -4,10 +4,43 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
  *
+ * @Hateoas\Relation(
+ *     "self",
+ *     href= @Hateoas\Route(
+ *          "api_article_show",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute="true"
+ *     )
+ * )
+ *
+ * @Hateoas\Relation(
+ *     "modify",
+ *     href= @Hateoas\Route(
+ *          "api_article_update",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute="true"
+ *     ),
+ *     exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(not is_granted(['ROLE_ADMIN']))"
+ *     )
+ * )
+ *
+ * @Hateoas\Relation(
+ *     "delete",
+ *     href= @Hateoas\Route(
+ *          "api_article_update",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute="true"
+ *     ),
+ *     exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(not is_granted(['ROLE_ADMIN']))"
+ *     )
+ * )
  */
 class Article
 {
