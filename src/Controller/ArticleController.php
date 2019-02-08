@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -18,11 +19,14 @@ class ArticleController extends AbstractController
      *
      * @Rest\View(statusCode=200, SerializerGroups={"list"})
      */
-    public function list()
+    public function list(ArticleRepository $articleRepository)
     {
-        $articles = $this->getDoctrine()->getRepository(Article::class)->findAll();
+        $articles = $articleRepository
+            ->findAll();
 
-        return $articles;
+        return $this->render('article/list.html.twig', [
+            'articles' => $articles,
+        ]);
     }
 
     /**
@@ -32,6 +36,7 @@ class ArticleController extends AbstractController
      */
     public function show(Article $article)
     {
+        dd($article);
         return $article;
     }
 
