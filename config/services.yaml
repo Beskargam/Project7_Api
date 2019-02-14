@@ -10,7 +10,7 @@ parameters:
     github_client_id: 5b87e9f662c9419b68c6
     github_client_secret: cc4dbcdc6727f916c6eb60231929e694e7f9f04e
 
-    my_api_url: http://localhost:8000/api/
+    my_api_url: http://localhost:8000/api
 
 services:
     # default configuration for services in *this* file
@@ -29,6 +29,13 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    github_authenticator:
+        class: App\Security\GithubAuthenticator
+
+    github_user_provider:
+        class: App\Security\GithubUserProvider
+        arguments: ["@csa_guzzle.client.github_api", "@jms_serializer.serializer"]
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

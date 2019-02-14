@@ -1,13 +1,28 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory: { memory: ~ }
+        # used to reload user from session & other features (e.g. switch_user)
+#        app_user_provider:
+#            entity:
+#                class: App\Entity\User
+#                property: email
+        github_user_provider:
+            id: App\Security\GithubUserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             anonymous: true
+            pattern: ^/api
+            stateless: true
+            guard:
+                authenticators:
+                    - App\Security\GithubAuthenticator
+#        secured_area:
+#            simple_preauth:
+#                authenticator: github_authenticator
+#            provider: provider.github_user
 
             # activate different ways to authenticate
 

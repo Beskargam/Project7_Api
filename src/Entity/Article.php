@@ -41,6 +41,11 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *          excludeIf = "expr(not is_granted(['ROLE_ADMIN']))"
  *     )
  * )
+ *
+ * @Hateoas\Relation(
+ *     "authenticated_user",
+ *     embedded="expr(service('security.token_storage').getToken().getUser())"
+ * )
  */
 class Article
 {

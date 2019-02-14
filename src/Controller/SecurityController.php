@@ -15,17 +15,8 @@ class SecurityController extends AbstractController
      *
      * @Rest\View(statusCode=200, SerializerGroups={"auth"})
      */
-    public function login()
+    public function checkLogin()
     {
         return $this->redirectToRoute('api_article_list');
-    }
-
-    /**
-     * @Rest\Get("/deconnexion", name="logout")
-     *
-     * @Rest\View(statusCode=200, SerializerGroups={"auth"})
-     */
-    public function logout()
-    {
     }
 }

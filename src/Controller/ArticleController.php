@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -19,14 +18,17 @@ class ArticleController extends AbstractController
      *
      * @Rest\View(statusCode=200, SerializerGroups={"list"})
      */
-    public function list(ArticleRepository $articleRepository)
+    public function list()
     {
-        $articles = $articleRepository
-            ->findAll();
+        $response = $this->get('csa_guzzle.client.github_api')
+            ->get($this->getParameter('http://localhost:8000/api').'/articles',
+                [
+                    'headers' => ['Authorization' => 'Bearer '.$this->getUser()->getUsername()]
+                ]);
 
-        return $this->render('article/list.html.twig', [
-            'articles' => $articles,
-        ]);
+        $articles = $this->get('serializer')->deserialize($response->getBody()->getContents(), 'array', 'json');
+
+        return $articles;
     }
 
     /**
@@ -36,7 +38,6 @@ class ArticleController extends AbstractController
      */
     public function show(Article $article)
     {
-        dd($article);
         return $article;
     }
 
@@ -52,8 +53,6 @@ class ArticleController extends AbstractController
         $manager->persist($article);
         $manager->flush();
 
-        return $this->redirectToRoute('api_article', [
-            'id' => $article->getId()
-        ]);
+        return $article;
     }
 }
