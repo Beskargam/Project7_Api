@@ -13,16 +13,13 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
+            anonymous: ~
+            logout: ~
             pattern: ^/api
             stateless: true
             guard:
                 authenticators:
                     - App\Security\GithubAuthenticator
-#        secured_area:
-#            simple_preauth:
-#                authenticator: github_authenticator
-#            provider: provider.github_user
 
             # activate different ways to authenticate
 
@@ -36,4 +33,4 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/api, roles: ROLE_USER }

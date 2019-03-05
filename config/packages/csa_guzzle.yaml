@@ -3,11 +3,23 @@
 # and http://docs.guzzlephp.org/en/latest/request-options.html
 csa_guzzle:
     profiler: '%kernel.debug%'
+    logger: true
     clients:
         default: ~
         github_api:
             config:
                 base_uri: https://api.github.com
+                headers:
+                    Accept: application/vnd.github.v3+json
+        jsonplaceholder:
+            config:
+                base_uri: https://jsonplaceholder.typicode.com
+                subscribers:
+                    debug: true
+                    stopwatch: true
+                    logger: true
+                headers:
+                    Accept: application/json
 #        my_client:
 #            config:
 #                base_uri: 'http://example.com'

@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}BileMo !{% endblock %}</title>
-        {% block stylesheets %}
-            <link href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css"
-                  rel="stylesheet">
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-            <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-        {% endblock %}
-    </head>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <h3>
-            Token : {{ app.token }}
-        </h3>
-    </nav>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-            <script src="{{ asset('js/javascript.js') }}"></script>
-        {% endblock %}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="google-signin-client_id" content="755533673803-g8dr1120ojv87d7a5mqug6a2fq8adkav.apps.googleusercontent.com">
+    <title>{% block title %}BileMo !{% endblock %}</title>
+    {% block stylesheets %}
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css"
+              rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    {% endblock %}
+</head>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <h3>
+        Token :
+        {% if app.user %}
+            {{ app.user.apiToken }}
+        {% else %}
+            Not authenticated
+        {% endif %}
+    </h3>
+</nav>
+<body>
+{% block body %}{% endblock %}
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="{{ asset('js/javascript.js') }}"></script>
+{% endblock %}
+</body>
 </html>

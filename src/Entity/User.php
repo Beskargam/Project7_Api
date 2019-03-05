@@ -3,10 +3,30 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ *
+ * @Hateoas\Relation(
+ *     "self",
+ *     href= @Hateoas\Route(
+ *          "api_user_show",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute="true"
+ *     )
+ * )
+ *
+ * @Hateoas\Relation(
+ *     "delete",
+ *     href = @Hateoas\Route(
+ *          "api_user_delete",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute="true"
+ *     )
+ * )
  */
 class User implements UserInterface
 {
@@ -18,30 +38,39 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(type="string", length=190)
+     *
+     * @Serializer\Groups({"list", "detail"})
+     */
+    private $username;
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true, nullable=true)
+     *
+     * @Serializer\Groups({"list", "detail"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * @Serializer\Groups({"detail"})
      */
     private $roles = [];
 
     /**
      * @ORM\Column(type="string", length=190, unique=true)
+     *
+     * @Serializer\Groups({"detail"})
      */
     private $apiToken;
 
-    /**
-     * @ORM\Column(type="string", length=190)
-     */
-    private $username;
-
-    public function __construct($id, $email, $username)
+    public function __construct($email, $username, $roles, $apiToken)
     {
-        $this->email = $id;
         $this->email = $email;
         $this->username = $username;
+        $this->roles = $roles;
+        $this->apiToken = $apiToken;
     }
 
     public function getId(): ?int

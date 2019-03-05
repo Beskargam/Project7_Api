@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -10,13 +11,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class SecurityController extends AbstractController
 {
+    private $client;
+
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
     /**
-     * @Rest\Get("/connexion", name="login")
+     * @Rest\Get("/connexion/verification", name="check_login")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"auth"})
      */
     public function checkLogin()
     {
-        return $this->redirectToRoute('api_article_list');
+        return $this->render('security/login.html.twig');
     }
 }

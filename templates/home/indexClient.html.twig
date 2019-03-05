@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BilMo Home{% endblock %}
+
+{% block body %}
+    <div class="container body-box">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="jumbotron">
+                    <h1 class="display-4">
+                        Bilmo Client Page
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>You are on a Virtual Client Page !</h2>
+                <h5>This page only exist to connect with the Bilmo API using Github</h5>
+                <a class="btn btn-primary"
+                   href="https://github.com/login/oauth/authorize?client_id=5b87e9f662c9419b68c6&redirect_uri={{ url('api_check_login') }}">
+                    Connexion Github
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

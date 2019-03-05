@@ -4,21 +4,28 @@ namespace App\Security;
 
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Serializer\Encoder\EncoderInterface;
 
 class GithubUserProvider implements UserProviderInterface
 {
     private $client;
 
-    public function __construct(Client $client, SerializerInterface $serializer)
+    public function __construct(Client $client,
+                                SerializerInterface $serializer,
+                                EncoderInterface $encoder,
+                                EntityManagerInterface $manager)
     {
         $this->client = $client;
         $this->serialzer = $serializer;
+        $this->encoder = $encoder;
+        $this->manager = $manager;
     }
 
     /**
@@ -27,29 +34,45 @@ class GithubUserProvider implements UserProviderInterface
      * This method must throw UsernameNotFoundException if the user is not
      * found.
      *
-     * @param string $username The username
+     * @param string $code The username
      *
      * @return UserInterface
      *
      * @throws UsernameNotFoundException if the user is not found
      */
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($code)
     {
-        $url = 'https://api.github.com/user?access_token='.$username;
+        $response = sprintf('https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s&redirect_uri=%s',
+            '5b87e9f662c9419b68c6',
+            'cc4dbcdc6727f916c6eb60231929e694e7f9f04e',
+            $code,
+            urlencode("http://localhost:8000/api/connexion/verification")
+        );
+        $body = $this->client->post($response)->getBody()->getContents();
 
-        $response = $this->client->get($url);
-        $res = $response->getBody()->getContents();
-        $userData = $this->serialzer->deserialize($res, 'array', 'json');
+        $tab = explode("=", $body);
+        $token = explode("&", $tab[1]);
+        $token = $token[0];
+
+        $url = 'https://api.github.com/user?access_token=' . $token;
+        $userData = $this->client->get($url)->getBody()->getContents();
 
         if (!$userData) {
             throw new \LogicException('Did not managed to get your user info from Github.');
         }
 
-        return new User(
-            $userData['login'],
-            $userData['username'],
-            $userData['email']
-            );
+        $serializedData = $this->serialzer->deserialize($userData, 'array', 'json');
+
+        $user = new User(
+            $serializedData['email'],
+            $serializedData['login'],
+            ['ROLE_USER'],
+            $token
+        );
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        return $user;
     }
 
     /**

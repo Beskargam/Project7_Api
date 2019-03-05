@@ -510,7 +510,7 @@
         "version": "3.0.0"
     },
     "willdurand/hateoas-bundle": {
-        "version": "2.0.0"
+        "version": "2.0-dev"
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v1.1.0"

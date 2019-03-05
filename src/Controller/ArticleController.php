@@ -3,32 +3,40 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use GuzzleHttp\Client;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Rest\Route("/api", name="api_"))
  */
 class ArticleController extends AbstractController
 {
+    private $client;
+
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
     /**
      * @Rest\Get("/articles", name="article_list")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"list"})
      */
-    public function list()
+    public function list(ArticleRepository $articleRepository,
+                         SerializerInterface $serializer)
     {
-        $response = $this->get('csa_guzzle.client.github_api')
-            ->get($this->getParameter('http://localhost:8000/api').'/articles',
-                [
-                    'headers' => ['Authorization' => 'Bearer '.$this->getUser()->getUsername()]
-                ]);
+        $articles = $serializer->serialize($articleRepository
+            ->findAll(), 'json', SerializationContext::create()->enableMaxDepthChecks());
 
-        $articles = $this->get('serializer')->deserialize($response->getBody()->getContents(), 'array', 'json');
-
-        return $articles;
+        return new Response($articles);
     }
 
     /**
@@ -36,9 +44,12 @@ class ArticleController extends AbstractController
      *
      * @Rest\View(statusCode=200, SerializerGroups={"detail"})
      */
-    public function show(Article $article)
+    public function show(Article $article,
+                         SerializerInterface $serializer)
     {
-        return $article;
+        $article = $serializer->serialize($article, 'json', SerializationContext::create()->enableMaxDepthChecks());
+
+        return new Response($article);
     }
 
     /**

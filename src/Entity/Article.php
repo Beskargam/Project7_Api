@@ -11,40 +11,16 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *
  * @Hateoas\Relation(
  *     "self",
- *     href= @Hateoas\Route(
+ *     href = @Hateoas\Route(
  *          "api_article_show",
  *          parameters = { "id" = "expr(object.getId())" },
  *          absolute="true"
- *     )
- * )
- *
- * @Hateoas\Relation(
- *     "modify",
- *     href= @Hateoas\Route(
- *          "api_article_update",
- *          parameters = { "id" = "expr(object.getId())" },
- *          absolute="true"
- *     ),
- *     exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(not is_granted(['ROLE_ADMIN']))"
- *     )
- * )
- *
- * @Hateoas\Relation(
- *     "delete",
- *     href= @Hateoas\Route(
- *          "api_article_update",
- *          parameters = { "id" = "expr(object.getId())" },
- *          absolute="true"
- *     ),
- *     exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(not is_granted(['ROLE_ADMIN']))"
- *     )
+ *      )
  * )
  *
  * @Hateoas\Relation(
  *     "authenticated_user",
- *     embedded="expr(service('security.token_storage').getToken().getUser())"
+ *     embedded = @Hateoas\Embedded("expr(service('security.token_storage').getToken().getUser())")
  * )
  */
 class Article

@@ -24,32 +24,55 @@ class GithubAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request)
     {
-        return $request->headers->has('Authorization');
+        if ($request->query->has('code')) {
+            return true;
+        }
+        if ($request->headers->has('authorization')) {
+            return true;
+        }
+        return false;
     }
 
     public function getCredentials(Request $request)
     {
-        return [
-            'token' => $request->headers->get('Authorization'),
-        ];
+        if ($request->query->has('code')) {
+            return [
+                'code' => $request->query->get('code'),
+                ];
+        }
+        if ($request->headers->has('Authorization')) {
+            return [
+                'Bearer' => $request->headers->get('Authorization'),
+                ];
+        }
+        return false;
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $apiToken = $credentials['token'];
-
-        if (null === $apiToken){
-            return;
+        if (isset($credentials['code'])) {
+            $apiCode = $credentials['code'];
+            return $userProvider->loadUserByUsername($apiCode);
         }
-        return $this->manager->getRepository(User::class)
+
+        $apiToken = $credentials['Bearer'];
+        $user = $this->manager->getRepository(User::class)
             ->findOneBy([
-                'apiToken' => $apiToken,
+                'apiToken' => $apiToken
             ]);
+
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
         return true;
+    }
+
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    {
+        // dd($request, $token, $providerKey);
+        return null;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
@@ -59,11 +82,6 @@ class GithubAuthenticator extends AbstractGuardAuthenticator
         ];
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
-    {
-        return null;
     }
 
     public function start(Request $request, AuthenticationException $authException = null)
