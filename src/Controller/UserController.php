@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +23,16 @@ class UserController extends AbstractController
      * @Rest\Get("/users", name="user_list")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"list"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the list of the users",
+     *     @SWG\Schema(
+     *          type="array",
+     *          @SWG\Items(ref=@Model(type=User::class, groups={"list"}))
+     *     )
+     * )
+     * @SWG\Tag(name="users")
      */
     public function list(UserRepository $userRepository,
                          SerializerInterface $serializer)
@@ -35,6 +47,16 @@ class UserController extends AbstractController
      * @Rest\Get("/users/{id<\d+>}", name="user_show")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"detail"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return the user depending on the parameter 'Id'",
+     *     @SWG\Schema(
+     *          type="array",
+     *          @SWG\Items(ref=@Model(type=User::class, groups={"detail"}))
+     *     )
+     * )
+     * @SWG\Tag(name="users")
      */
     public function show(User $user,
                          SerializerInterface $serializer)
@@ -48,6 +70,16 @@ class UserController extends AbstractController
      * @Rest\Delete("/users/{id<\d+>}", name="user_delete")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"detail"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Delete the user depending on the parameter 'Id'",
+     *     @SWG\Schema(
+     *          type="object",
+     *          @SWG\Items(ref=@Model(type=User::class, groups={"detail"}))
+     *     )
+     * )
+     * @SWG\Tag(name="users")
      */
     public function delete(EntityManagerInterface $manager,
                            User $user)

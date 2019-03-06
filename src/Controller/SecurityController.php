@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use GuzzleHttp\Client;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -22,6 +23,12 @@ class SecurityController extends AbstractController
      * @Rest\Get("/connexion/verification", name="check_login")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"auth"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Return an authenticated user after passing the firewalls"
+     * )
+     * @SWG\Tag(name="security")
      */
     public function checkLogin()
     {
