@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="google-signin-client_id" content="755533673803-g8dr1120ojv87d7a5mqug6a2fq8adkav.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="755533673803-ilamn05m8fi64jk1hagaiidk0qjqk4u6.apps.googleusercontent.com">
     <title>{% block title %}BileMo !{% endblock %}</title>
     {% block stylesheets %}
         <link href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css"
@@ -12,14 +12,14 @@
     {% endblock %}
 </head>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <h3>
+    <h6>
         Token :
         {% if app.user %}
-            {{ app.user.apiToken }}
+            {{ app.user.accessToken }}
         {% else %}
             Not authenticated
         {% endif %}
-    </h3>
+    </h6>
 </nav>
 <body>
 {% block body %}{% endblock %}

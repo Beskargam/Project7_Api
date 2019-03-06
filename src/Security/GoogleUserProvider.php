@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 
-class GithubUserProvider implements UserProviderInterface
+class GoogleUserProvider implements UserProviderInterface
 {
     private $client;
 
@@ -42,34 +42,51 @@ class GithubUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($code)
     {
-        $response = sprintf('https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s&redirect_uri=%s',
-            '5b87e9f662c9419b68c6',
-            'cc4dbcdc6727f916c6eb60231929e694e7f9f04e',
+        $response = sprintf('https://www.googleapis.com/oauth2/v4/token?code=%s&client_id=%s&client_secret=%s&redirect_uri=%s&grant_type=%s',
             $code,
-            urlencode("http://localhost:8000/api/connexion/verification")
+            '755533673803-ilamn05m8fi64jk1hagaiidk0qjqk4u6.apps.googleusercontent.com',
+            'dNcu3Ya1d5TuMSeMtTZIUzKh',
+            urlencode("http://localhost:8000/api/connexion/verification"),
+            'authorization_code'
         );
+
         $body = $this->client->post($response)->getBody()->getContents();
 
-        $tab = explode("=", $body);
-        $token = explode("&", $tab[1]);
-        $token = $token[0];
 
-        $url = 'https://api.github.com/user?access_token=' . $token;
+        $tab = explode('"', $body);
+        $accessToken = explode('"', $tab[3]);
+        $accessToken = $accessToken[0];
+
+        $tab = explode('"', $body);
+        $refresh_token = explode('"', $tab[9]);
+        $refresh_token = $refresh_token[0];
+        /*
+        $tab = explode('"', $body);
+        $token_type = explode('"', $tab[17]);
+        $token_type = $token_type[0];
+        */
+
+        // dd($body, $accessToken, $token_type, $refresh_token);
+
+        $url = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $accessToken;
         $userData = $this->client->get($url)->getBody()->getContents();
 
         if (!$userData) {
-            throw new \LogicException('Did not managed to get your user info from Github.');
+            throw new \LogicException('Did not managed to get your user info from Google.');
         }
 
         $serializedData = $this->serialzer->deserialize($userData, 'array', 'json');
 
         $user = new User(
             $serializedData['email'],
-            $serializedData['login'],
+            $serializedData['name'],
             ['ROLE_USER'],
-            $token
+            $accessToken,
+            $refresh_token
         );
+        if ($this->manager->contains($user)) {
         $this->manager->persist($user);
+        }
         $this->manager->flush();
 
         return $user;

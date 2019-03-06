@@ -6,8 +6,8 @@ security:
 #            entity:
 #                class: App\Entity\User
 #                property: email
-        github_user_provider:
-            id: App\Security\GithubUserProvider
+        google_user_provider:
+            id: App\Security\GoogleUserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -19,7 +19,7 @@ security:
             stateless: true
             guard:
                 authenticators:
-                    - App\Security\GithubAuthenticator
+                    - App\Security\Authenticator
 
             # activate different ways to authenticate
 

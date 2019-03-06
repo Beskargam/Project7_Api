@@ -16,10 +16,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <h2>You are on a Virtual Client Page !</h2>
-                <h5>This page only exist to connect with the Bilmo API using Github</h5>
+                <h5>This page only exist to connect with the Bilmo API using Google</h5>
                 <a class="btn btn-primary"
-                   href="https://github.com/login/oauth/authorize?client_id=5b87e9f662c9419b68c6&redirect_uri={{ url('api_check_login') }}">
-                    Connexion Github
+                   href="https://accounts.google.com/o/oauth2/v2/auth?scope=profile email&access_type=offline&include_granted_scopes=true&redirect_uri={{ url('api_check_login') }}&response_type=code&client_id={{ google_client_id }}&prompt=select_account consent">
+                    Connexion Google
                 </a>
             </div>
         </div>

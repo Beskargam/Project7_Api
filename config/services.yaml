@@ -6,9 +6,9 @@
 parameters:
     locale: 'en'
 
-    # Github OAuth
-    github_client_id: '%env(resolve:GITHUB_CLIENT_ID)%'
-    github_client_secret: '%env(resolve:GITHUB_CLIENT_SECRET)%'
+    # Google OAuth
+    github_client_id: '%env(resolve:GOOGLE_CLIENT_ID)%'
+    github_client_secret: '%env(resolve:GOOGLE_CLIENT_SECRET)%'
     my_api_url: '%env(resolve:MY_API_URL)%'
 
 services:
@@ -30,11 +30,11 @@ services:
         tags: ['controller.service_arguments']
 
     github_authenticator:
-        class: App\Security\GithubAuthenticator
+        class: App\Security\Authenticator
 
     github_user_provider:
-        class: App\Security\GithubUserProvider
-        arguments: ["@csa_guzzle.client.github_api", "@jms_serializer.serializer"]
+        class: App\Security\GoogleUserProvider
+        arguments: ["@csa_guzzle.client.google_api", "@jms_serializer.serializer"]
 
 
     # add more service definitions when explicit configuration is needed

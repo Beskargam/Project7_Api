@@ -6,11 +6,9 @@ csa_guzzle:
     logger: true
     clients:
         default: ~
-        github_api:
+        google_api:
             config:
-                base_uri: https://api.github.com
-                headers:
-                    Accept: application/vnd.github.v3+json
+                base_uri: https://www.googleapis.com
         jsonplaceholder:
             config:
                 base_uri: https://jsonplaceholder.typicode.com

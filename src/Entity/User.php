@@ -63,14 +63,22 @@ class User implements UserInterface
      *
      * @Serializer\Groups({"detail"})
      */
-    private $apiToken;
+    private $accessToken;
 
-    public function __construct($email, $username, $roles, $apiToken)
+    /**
+     * @ORM\Column(type="string", length=190, unique=true)
+     *
+     * @Serializer\Groups({"detail"})
+     */
+    private $refreshToken;
+
+    public function __construct($email, $username, $roles, $accessToken, $refreshToken)
     {
         $this->email = $email;
         $this->username = $username;
         $this->roles = $roles;
-        $this->apiToken = $apiToken;
+        $this->accessToken = $accessToken;
+        $this->refreshToken = $refreshToken;
     }
 
     public function getId(): ?int
@@ -144,14 +152,14 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getApiToken(): ?string
+    public function getAccessToken(): ?string
     {
-        return $this->apiToken;
+        return $this->accessToken;
     }
 
-    public function setApiToken(string $apiToken): self
+    public function setAccessToken(string $accessToken): self
     {
-        $this->apiToken = $apiToken;
+        $this->accessToken = $accessToken;
 
         return $this;
     }
@@ -159,6 +167,18 @@ class User implements UserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getRefreshToken(): ?string
+    {
+        return $this->refreshToken;
+    }
+
+    public function setRefreshToken(string $refreshToken): self
+    {
+        $this->refreshToken = $refreshToken;
 
         return $this;
     }

@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
-class GithubAuthenticator extends AbstractGuardAuthenticator
+class Authenticator extends AbstractGuardAuthenticator
 {
     private $manager;
 
@@ -55,10 +55,10 @@ class GithubAuthenticator extends AbstractGuardAuthenticator
             return $userProvider->loadUserByUsername($apiCode);
         }
 
-        $apiToken = $credentials['Bearer'];
+        $accessToken = $credentials['Bearer'];
         $user = $this->manager->getRepository(User::class)
             ->findOneBy([
-                'apiToken' => $apiToken
+                'accessToken' => $accessToken
             ]);
 
         return $user;
