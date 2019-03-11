@@ -15,7 +15,7 @@
     <h6>
         Token :
         {% if app.user %}
-            {{ app.user.accessToken }}
+            {{ app.user.accessToken.accessToken }}
         {% else %}
             Not authenticated
         {% endif %}

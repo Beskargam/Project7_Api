@@ -12,13 +12,14 @@ use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @Rest\Route("/api", name="api_"))
  */
-class ArticleController extends AbstractController
+class ArticleController
 {
     private $client;
 
@@ -43,8 +44,22 @@ class ArticleController extends AbstractController
      * @SWG\Tag(name="articles")
      */
     public function list(ArticleRepository $articleRepository,
-                         SerializerInterface $serializer)
+                         SerializerInterface $serializer,
+                         UserInterface $user)
     {
+        /*
+        $accessTokenTime = $user->getAccessToken()->getDateToken();
+        $nowTime = new \DateTime('NOW');
+
+        if (($nowTime - $accessTokenTime) > 3600) {
+            $data = [
+                'message' => 'Votre Token est trop vieux vous devez en redemander un',
+            ];
+
+            return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        }
+        */
+
         $articles = $serializer->serialize($articleRepository
             ->findAll(), 'json', SerializationContext::create()->enableMaxDepthChecks());
 
@@ -67,7 +82,8 @@ class ArticleController extends AbstractController
      * @SWG\Tag(name="articles")
      */
     public function show(Article $article,
-                         SerializerInterface $serializer)
+                         SerializerInterface $serializer,
+                         UserInterface $user)
     {
         $article = $serializer->serialize($article, 'json', SerializationContext::create()->enableMaxDepthChecks());
 
@@ -91,7 +107,8 @@ class ArticleController extends AbstractController
      * @SWG\Tag(name="articles")
      */
     public function create(EntityManagerInterface $manager,
-                           Article $article)
+                           Article $article,
+                           UserInterface $user)
     {
         $manager->persist($article);
         $manager->flush();

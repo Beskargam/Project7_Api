@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Token;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,14 +55,16 @@ class Authenticator extends AbstractGuardAuthenticator
             $apiCode = $credentials['code'];
             return $userProvider->loadUserByUsername($apiCode);
         }
-
-        $accessToken = $credentials['Bearer'];
-        $user = $this->manager->getRepository(User::class)
-            ->findOneBy([
-                'accessToken' => $accessToken
-            ]);
-
-        return $user;
+        if (isset($credentials['Bearer'])) {
+            $accessToken = $credentials['Bearer'];
+            $userToken = $this->manager->getRepository(Token::class)
+                ->findOneBy([
+                    'accessToken' => $accessToken
+                ]);
+            $user = $userToken->getUser();
+            return $user;
+        }
+        return null;
     }
 
     public function checkCredentials($credentials, UserInterface $user)

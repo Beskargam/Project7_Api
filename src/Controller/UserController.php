@@ -69,10 +69,10 @@ class UserController extends AbstractController
     /**
      * @Rest\Delete("/users/{id<\d+>}", name="user_delete")
      *
-     * @Rest\View(statusCode=200, SerializerGroups={"detail"})
+     * @Rest\View(statusCode=204, SerializerGroups={"detail"})
      *
      * @SWG\Response(
-     *     response=200,
+     *     response=204,
      *     description="Delete the user depending on the parameter 'Id'",
      *     @SWG\Schema(
      *          type="object",
@@ -87,10 +87,6 @@ class UserController extends AbstractController
         $manager->remove($user);
         $manager->flush();
 
-        $data = [
-            'message' => 'Utilisateur supprimmé'
-        ];
-
-        return new JsonResponse($data, Response::HTTP_OK);
+        return null;
     }
 }

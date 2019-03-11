@@ -45,7 +45,7 @@ class User implements UserInterface
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true, nullable=true)
+     * @ORM\Column(type="string", length=180, unique=true, nullable=false)
      *
      * @Serializer\Groups({"list", "detail"})
      */
@@ -63,21 +63,19 @@ class User implements UserInterface
      *
      * @Serializer\Groups({"detail"})
      */
-    private $accessToken;
-
-    /**
-     * @ORM\Column(type="string", length=190, unique=true)
-     *
-     * @Serializer\Groups({"detail"})
-     */
     private $refreshToken;
 
-    public function __construct($email, $username, $roles, $accessToken, $refreshToken)
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Token", inversedBy="user", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $accessToken;
+
+    public function __construct($email, $username, $roles, $refreshToken)
     {
         $this->email = $email;
         $this->username = $username;
         $this->roles = $roles;
-        $this->accessToken = $accessToken;
         $this->refreshToken = $refreshToken;
     }
 
@@ -152,18 +150,6 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getAccessToken(): ?string
-    {
-        return $this->accessToken;
-    }
-
-    public function setAccessToken(string $accessToken): self
-    {
-        $this->accessToken = $accessToken;
-
-        return $this;
-    }
-
     public function setUsername(string $username): self
     {
         $this->username = $username;
@@ -179,6 +165,18 @@ class User implements UserInterface
     public function setRefreshToken(string $refreshToken): self
     {
         $this->refreshToken = $refreshToken;
+
+        return $this;
+    }
+
+    public function getAccessToken(): ?Token
+    {
+        return $this->accessToken;
+    }
+
+    public function setAccessToken(Token $accessToken): self
+    {
+        $this->accessToken = $accessToken;
 
         return $this;
     }

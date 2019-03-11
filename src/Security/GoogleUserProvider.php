@@ -3,6 +3,7 @@
 namespace App\Security;
 
 
+use App\Entity\Token;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
@@ -52,7 +53,6 @@ class GoogleUserProvider implements UserProviderInterface
 
         $body = $this->client->post($response)->getBody()->getContents();
 
-
         $tab = explode('"', $body);
         $accessToken = explode('"', $tab[3]);
         $accessToken = $accessToken[0];
@@ -77,18 +77,24 @@ class GoogleUserProvider implements UserProviderInterface
 
         $serializedData = $this->serialzer->deserialize($userData, 'array', 'json');
 
-        $user = new User(
-            $serializedData['email'],
-            $serializedData['name'],
-            ['ROLE_USER'],
-            $accessToken,
-            $refresh_token
+        $token = new Token(
+            $accessToken
         );
-        if ($this->manager->contains($user)) {
-        $this->manager->persist($user);
+        if (!$this->manager->getRepository(User::class)->findOneByEmail($serializedData['email'])) {
+            $user = new User(
+                $serializedData['email'],
+                $serializedData['name'],
+                ['ROLE_USER'],
+                $refresh_token
+            );
+            $user->setAccessToken($token);
+            $this->manager->persist($user);
+        } else {
+            $user = $this->manager->getRepository(User::class)->findOneByEmail($serializedData['email']);
+            $user->getAccessToken()->setAccessToken($accessToken);
+            $user->getAccessToken()->setDateToken(new \DateTime());
         }
         $this->manager->flush();
-
         return $user;
     }
 
