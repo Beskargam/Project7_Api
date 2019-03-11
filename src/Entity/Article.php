@@ -53,6 +53,14 @@ class Article
      */
     private $price;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Manufacturer", inversedBy="articles")
+     * @ORM\JoinColumn(nullable=true)
+     *
+     * @Serializer\Groups({"list", "detail"})
+     */
+    private $manufacturer;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +98,18 @@ class Article
     public function setPrice(int $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getManufacturer(): ?Manufacturer
+    {
+        return $this->manufacturer;
+    }
+
+    public function setManufacturer(?Manufacturer $manufacturer): self
+    {
+        $this->manufacturer = $manufacturer;
 
         return $this;
     }
