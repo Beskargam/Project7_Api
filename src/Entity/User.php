@@ -71,6 +71,12 @@ class User implements UserInterface
      */
     private $accessToken;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Vendor", inversedBy="users", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $vendor;
+
     public function __construct($email, $username, $roles, $refreshToken)
     {
         $this->email = $email;
@@ -177,6 +183,18 @@ class User implements UserInterface
     public function setAccessToken(Token $accessToken): self
     {
         $this->accessToken = $accessToken;
+
+        return $this;
+    }
+
+    public function getVendor(): ?Vendor
+    {
+        return $this->vendor;
+    }
+
+    public function setVendor(?Vendor $vendor): self
+    {
+        $this->vendor = $vendor;
 
         return $this;
     }

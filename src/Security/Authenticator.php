@@ -61,6 +61,9 @@ class Authenticator extends AbstractGuardAuthenticator
                 ->findOneBy([
                     'accessToken' => $accessToken
                 ]);
+            if ($userToken == null) {
+                return null;
+            }
             $user = $userToken->getUser();
             return $user;
         }

@@ -5,6 +5,7 @@ namespace App\Security;
 
 use App\Entity\Token;
 use App\Entity\User;
+use App\Entity\Vendor;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use JMS\Serializer\SerializerInterface;
@@ -80,6 +81,10 @@ class GoogleUserProvider implements UserProviderInterface
         $token = new Token(
             $accessToken
         );
+        $vendorName = 'TestVendor';
+        $vendor = new Vendor(
+            $vendorName
+        );
         if (!$this->manager->getRepository(User::class)->findOneByEmail($serializedData['email'])) {
             $user = new User(
                 $serializedData['email'],
@@ -88,6 +93,7 @@ class GoogleUserProvider implements UserProviderInterface
                 $refresh_token
             );
             $user->setAccessToken($token);
+            $user->setVendor($vendor);
             $this->manager->persist($user);
         } else {
             $user = $this->manager->getRepository(User::class)->findOneByEmail($serializedData['email']);

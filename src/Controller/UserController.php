@@ -11,7 +11,6 @@ use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -20,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends AbstractController
 {
     /**
-     * @Rest\Get("/users", name="user_list")
+     * @Rest\Get("/utilisateurs", name="user_list")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"list"})
      *
@@ -40,11 +39,15 @@ class UserController extends AbstractController
         $users = $serializer->serialize($userRepository
             ->findAll(), 'json', SerializationContext::create()->enableMaxDepthChecks());
 
-        return new Response($users);
+        $response = new Response($users);
+        $response->setSharedMaxAge(3600);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     /**
-     * @Rest\Get("/users/{id<\d+>}", name="user_show")
+     * @Rest\Get("/utilisateurs/{id<\d+>}", name="user_show")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"detail"})
      *
@@ -63,11 +66,15 @@ class UserController extends AbstractController
     {
         $user = $serializer->serialize($user, 'json', SerializationContext::create()->enableMaxDepthChecks());
 
-        return new Response($user);
+        $response = new Response($user);
+        $response->setSharedMaxAge(3600);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     /**
-     * @Rest\Delete("/users/{id<\d+>}", name="user_delete")
+     * @Rest\Delete("/utilisateurs/{id<\d+>}", name="user_delete")
      *
      * @Rest\View(statusCode=204, SerializerGroups={"detail"})
      *

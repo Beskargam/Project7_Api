@@ -4,11 +4,11 @@ Openclasrooms PHP/Symfony project 7 : Api
  
 developper : AureDev
  
-Developped with : PHPStorm, WAMP64
+Developped with : PHPStorm, WAMP64, Postman
 
 languages : html, css, javascript, Symfony, Doctrine, Twig
 
-Bundle : JMSSerializer, FOSRestBundle
+Bundle : JMSSerializer, FOSRestBundle, CSAGuzzleBundle, NelmioAPIBundle
 
 installation guide :
 

@@ -12,7 +12,6 @@ use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -29,7 +28,7 @@ class ArticleController
     }
 
     /**
-     * @Rest\Get("/articles", name="article_list")
+     * @Rest\Get("/telephones", name="article_list")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"list"})
      *
@@ -63,11 +62,15 @@ class ArticleController
         $articles = $serializer->serialize($articleRepository
             ->findAll(), 'json', SerializationContext::create()->enableMaxDepthChecks());
 
-        return new Response($articles);
+        $response = new Response($articles);
+        $response->setSharedMaxAge(3600);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     /**
-     * @Rest\Get("/articles/{id<\d+>}", name="article_show")
+     * @Rest\Get("/telephones/{id<\d+>}", name="article_show")
      *
      * @Rest\View(statusCode=200, SerializerGroups={"detail"})
      *
@@ -87,11 +90,15 @@ class ArticleController
     {
         $article = $serializer->serialize($article, 'json', SerializationContext::create()->enableMaxDepthChecks());
 
-        return new Response($article);
+        $response = new Response($article);
+        $response->setSharedMaxAge(3600);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     /**
-     * @Rest\Post("/articles", name="article_create")
+     * @Rest\Post("/telephones", name="article_create")
      *
      * @Rest\View(statusCode=201)
      * @ParamConverter("article", converter="fos_rest.request_body")
