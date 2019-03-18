@@ -27,7 +27,7 @@ class Token
     private $dateToken;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", mappedBy="accessToken", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\User", mappedBy="accessToken", cascade={"persist" "remove"})
      */
     private $user;
 
