@@ -48,7 +48,7 @@ class GoogleUserProvider implements UserProviderInterface
             $code,
             '755533673803-ilamn05m8fi64jk1hagaiidk0qjqk4u6.apps.googleusercontent.com',
             'dNcu3Ya1d5TuMSeMtTZIUzKh',
-            urlencode("https://app-bilemo.herokuapp.com/api/connexion/verification"),
+            urlencode("http://app-bilemo.herokuapp.com/api/connexion/verification"),
             'authorization_code'
         );
 
